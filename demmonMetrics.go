@@ -3,10 +3,10 @@ package demmonMetrics
 import (
 	"io"
 
-	"github.com/nm-morais/demmon-common/metrics"
+	"github.com/nm-morais/demmon-common/exporters"
 )
 
-var defaultSet = metrics.NewSet()
+var defaultSet = exporters.NewSet()
 
 func WriteMetrics(w io.Writer) {
 	defaultSet.WriteMetrics(w)
@@ -14,16 +14,16 @@ func WriteMetrics(w io.Writer) {
 
 // NewCounter registers and returns new counter with the given name.
 // The returned counter is safe to use from concurrent goroutines.
-func NewCounter(name string) *metrics.Counter {
+func NewCounter(name string) *exporters.Counter {
 	return defaultSet.NewCounter(name)
 }
 
 // NewGauge registers and returns gauge with the given name, which calls f
 // to obtain gauge value.
-func NewGauge(name string, f func() float64) *metrics.Gauge {
+func NewGauge(name string, f func() float64) *exporters.Gauge {
 	return defaultSet.NewGauge(name, f)
 }
 
-func NewHistogram(name string) *metrics.Histogram {
+func NewHistogram(name string) *exporters.Histogram {
 	return defaultSet.NewHistogram(name)
 }
