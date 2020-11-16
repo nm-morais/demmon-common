@@ -5,8 +5,26 @@ import (
 	"net"
 	"time"
 
-	"github.com/nm-morais/demmon-common/timeseries"
+	"github.com/nm-morais/demmon-common/routes"
 )
+
+type PointCollection = []*Point
+
+type Point struct {
+	Name   string
+	TS     int64
+	Tags   map[string]string
+	Fields map[string]interface{}
+}
+
+func NewPoint(name string, tags map[string]string, values map[string]interface{}, timestamp int64) *Point {
+	return &Point{
+		Name:   name,
+		Tags:   tags,
+		TS:     timestamp,
+		Fields: values,
+	}
+}
 
 type Peer struct {
 	ID string
@@ -36,48 +54,35 @@ type NodeUpdateSubscriptionResponse struct {
 	View View
 }
 
-type MetricMetadata struct {
-	Name                    string
-	Service                 string
-	Plugin                  string
-	UnmarshalFuncSymbolName string
-	MarshalFuncSymbolName   string
-	Sender                  string
-	Granularities           []timeseries.Granularity
-}
-
-type GlobalPropagationOptions struct {
-	QueryName    string
-	InputSeries  []string // this value is used to perform a prefix search and fetch all the timeseries which are used as input to the aggregation function
-	FuncName     string
-	Plugin       string
-	Frequency    time.Duration
-	OutputMetric MetricMetadata
+type GetPluginRequest struct {
+	Chunksize  int
+	PluginName string
 }
 
 type NeighbourhoodPropagationOptions struct {
-	TTL          int
-	OutputMetric MetricMetadata
-	Frequency    time.Duration
+	TTL                  int
+	PropagationFrequency time.Duration
+	OutputMetricName     string
+	OutputMetricTags     map[string]string
 }
 
 // Request represents a request from client
 type Request struct {
-	ID      uint64      `json:"id"`
-	Type    int         `json:"type"`
-	Message interface{} `json:"message,omitempty"`
+	ID      uint64             `json:"id"`
+	Type    routes.RequestType `json:"type"`
+	Message interface{}        `json:"message,omitempty"`
 }
 
 // Response is the reply message from the server
 type Response struct {
-	ID      uint64      `json:"id"`
-	Push    bool        `json:"push"`
-	Type    int         `json:"type"`
-	Error   bool        `json:"error"`
-	Message interface{} `json:"message,omitempty"`
+	ID      uint64             `json:"id"`
+	Push    bool               `json:"push"`
+	Type    routes.RequestType `json:"type"`
+	Error   bool               `json:"error"`
+	Message interface{}        `json:"message,omitempty"`
 }
 
-func NewRequest(id uint64, reqType int, message interface{}) *Request {
+func NewRequest(id uint64, reqType routes.RequestType, message interface{}) *Request {
 	return &Request{
 		Type:    reqType,
 		ID:      id,
@@ -85,7 +90,7 @@ func NewRequest(id uint64, reqType int, message interface{}) *Request {
 	}
 }
 
-func NewResponse(id uint64, push bool, err error, respType int, message interface{}) *Response {
+func NewResponse(id uint64, push bool, err error, respType routes.RequestType, message interface{}) *Response {
 	if err != nil {
 		return &Response{
 			Type:    respType,

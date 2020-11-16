@@ -1,28 +1,56 @@
 package routes
 
+import "fmt"
+
 const (
 	Dial = "/dial"
 )
 
+type RequestType int
+
+func NewRequest(reqNr int) RequestType {
+	return RequestType(reqNr)
+}
+
 const (
-	GetInView = iota
-
-	GetRegisteredMetrics
-	GetRegisteredPlugins
-
+	GetInView RequestType = iota
+	GetRegisteredMetricBuckets
 	RegisterMetrics
 	PushMetricBlob
-
+	RegisterAggregationPlugin
 	QueryMetric
 	IsMetricActive
-
-	// plugins
-	AddPlugin
 	BroadcastMessage
-
 	AlarmTrigger
 	MembershipUpdates
 )
+
+func (r RequestType) String() string {
+	switch r {
+	case GetInView:
+		return "GetInView"
+	case GetRegisteredMetricBuckets:
+		return "GetRegisteredMetricBuckets"
+	case RegisterMetrics:
+		return "RegisterMetrics"
+	case PushMetricBlob:
+		return "PushMetricBlob"
+	case RegisterAggregationPlugin:
+		return "RegisterAggregationPlugin"
+	case QueryMetric:
+		return "QueryMetric"
+	case IsMetricActive:
+		return "IsMetricActive"
+	case BroadcastMessage:
+		return "BroadcastMessage"
+	case AlarmTrigger:
+		return "AlarmTrigger"
+	case MembershipUpdates:
+		return "MembershipUpdates"
+	default:
+		return fmt.Sprintf("%d", int(r))
+	}
+}
 
 // const (
 
