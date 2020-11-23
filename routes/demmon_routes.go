@@ -18,7 +18,10 @@ const (
 	RegisterMetrics
 	PushMetricBlob
 	RegisterAggregationPlugin
-	QueryMetric
+	InstallCustomInterestSet
+	InstallContinuousQuery
+	GetContinuousQueries
+	Query
 	IsMetricActive
 	BroadcastMessage
 	AlarmTrigger
@@ -35,10 +38,14 @@ func (r RequestType) String() string {
 		return "RegisterMetrics"
 	case PushMetricBlob:
 		return "PushMetricBlob"
-	case RegisterAggregationPlugin:
-		return "RegisterAggregationPlugin"
-	case QueryMetric:
+	case Query:
 		return "QueryMetric"
+	case InstallContinuousQuery:
+		return "InstallContinuousQuery"
+	case GetContinuousQueries:
+		return "GetContinuousQueries"
+	case InstallCustomInterestSet:
+		return "InstallCustomInterestSet"
 	case IsMetricActive:
 		return "IsMetricActive"
 	case BroadcastMessage:

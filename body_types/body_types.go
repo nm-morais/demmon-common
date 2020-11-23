@@ -8,22 +8,62 @@ import (
 	"github.com/nm-morais/demmon-common/routes"
 )
 
-type PointCollection = []*Point
+type CustomInterestSet struct {
+	Query                   string
+	Hosts                   []string
+	OutputMetricName        string
+	OutputMetricGranularity Granularity
+}
+
+type NeighborhoodInterestSet struct {
+	Query                   string
+	OutputMetricName        string
+	OutputMetricGranularity Granularity
+}
+
+type TreeInterestSet struct {
+	Query                   string
+	OutputMetricName        string
+	OutputMetricGranularity Granularity
+}
+
+type InstallInterestSetReply struct {
+	SetId uint64
+}
+
+type Timeseries struct {
+	Name   string
+	Tags   map[string]string
+	Points []Point
+}
 
 type Point struct {
-	Name   string
-	TS     int64
-	Tags   map[string]string
+	TS     time.Time
 	Fields map[string]interface{}
 }
 
-func NewPoint(name string, tags map[string]string, values map[string]interface{}, timestamp int64) *Point {
-	return &Point{
-		Name:   name,
-		Tags:   tags,
-		TS:     timestamp,
-		Fields: values,
+type PointCollectionWithTagsAndName = []*PointWithTagsAndName
+
+type PointWithTagsAndName struct {
+	Point Point
+	Tags  map[string]string
+	Name  string
+}
+
+func NewPoint(name string, tags map[string]string, fields map[string]interface{}, timestamp time.Time) *PointWithTagsAndName {
+	return &PointWithTagsAndName{
+		Name: name,
+		Tags: tags,
+		Point: Point{
+			Fields: fields,
+			TS:     timestamp,
+		},
 	}
+}
+
+type Granularity struct {
+	Granularity time.Duration
+	Count       int
 }
 
 type Peer struct {
@@ -31,11 +71,19 @@ type Peer struct {
 	IP net.IP
 }
 
-type PluginFileBlock struct {
-	Name       string
-	FirstBlock bool
-	FinalBlock bool
-	Content    string //b64 encoded
+type QueryRequest struct {
+	Query   string
+	Timeout time.Duration
+}
+
+type InstallContinuousQueryRequest struct {
+	Description       string
+	FrequencySeconds  uint
+	OutputMetricName  string
+	OutputMetricCount int
+	ExpressionTimeout time.Duration
+	Expression        string
+	NrRetries         int
 }
 
 type View struct {
@@ -54,16 +102,18 @@ type NodeUpdateSubscriptionResponse struct {
 	View View
 }
 
-type GetPluginRequest struct {
-	Chunksize  int
-	PluginName string
+type InstallContinuousQueryReply struct {
+	TaskId uint64
 }
 
-type NeighbourhoodPropagationOptions struct {
-	TTL                  int
-	PropagationFrequency time.Duration
-	OutputMetricName     string
-	OutputMetricTags     map[string]string
+type GetContinuousQueriesReply struct {
+	ContinuousQueries []struct {
+		TaskId    int
+		NrRetries int
+		CurrTry   int
+		LastRan   time.Time
+		Error     error
+	}
 }
 
 // Request represents a request from client
@@ -112,5 +162,4 @@ func NewResponse(id uint64, push bool, err error, respType routes.RequestType, m
 
 func (r *Response) GetMsgAsErr() error {
 	return errors.New(r.Message.(string))
-
 }
