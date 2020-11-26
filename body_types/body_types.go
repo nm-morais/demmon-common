@@ -8,28 +8,63 @@ import (
 	"github.com/nm-morais/demmon-common/routes"
 )
 
+// membership
+
+type Peer struct {
+	ID string
+	IP net.IP
+}
+
+type View struct {
+	Children    []*Peer
+	Siblings    []*Peer
+	Parent      *Peer
+	Grandparent *Peer
+}
+
+type NodeUpdates struct {
+	Node Peer
+	View View
+}
+
+type NodeUpdateSubscriptionResponse struct {
+	View View
+}
+
+// interest sets
+
 type CustomInterestSet struct {
-	Query                   string
-	Hosts                   []string
-	OutputMetricName        string
-	OutputMetricGranularity Granularity
+	MaxRetries       int
+	Query            RunnableExpression
+	Hosts            []*Peer
+	OutputBucketOpts BucketOptions
 }
 
 type NeighborhoodInterestSet struct {
-	Query                   string
-	OutputMetricName        string
-	OutputMetricGranularity Granularity
+	MaxRetries       int
+	Query            RunnableExpression
+	TTL              int
+	OutputBucketOpts BucketOptions
 }
 
 type TreeInterestSet struct {
-	Query                   string
-	OutputMetricName        string
-	OutputMetricGranularity Granularity
+	MaxRetries       int
+	Query            RunnableExpression
+	OutputBucketOpts BucketOptions
+	Levels           int
+}
+
+type GlobalInterestSet struct {
+	MaxRetries       int
+	Query            RunnableExpression
+	OutputBucketOpts BucketOptions
 }
 
 type InstallInterestSetReply struct {
 	SetId uint64
 }
+
+// timeseries
 
 type Timeseries struct {
 	Name   string
@@ -40,6 +75,11 @@ type Timeseries struct {
 type Point struct {
 	TS     time.Time
 	Fields map[string]interface{}
+}
+
+type BucketOptions struct {
+	Name        string
+	Granularity Granularity
 }
 
 type PointCollectionWithTagsAndName = []*PointWithTagsAndName
@@ -66,40 +106,23 @@ type Granularity struct {
 	Count       int
 }
 
-type Peer struct {
-	ID string
-	IP net.IP
+// queries
+
+type RunnableExpression struct {
+	Timeout    time.Duration
+	Expression string
 }
 
 type QueryRequest struct {
-	Query   string
-	Timeout time.Duration
+	Query RunnableExpression
 }
 
 type InstallContinuousQueryRequest struct {
 	Description       string
-	FrequencySeconds  uint
-	OutputMetricName  string
-	OutputMetricCount int
 	ExpressionTimeout time.Duration
 	Expression        string
 	NrRetries         int
-}
-
-type View struct {
-	Children    []*Peer
-	Siblings    []*Peer
-	Parent      *Peer
-	Grandparent *Peer
-}
-
-type NodeUpdates struct {
-	Node Peer
-	View View
-}
-
-type NodeUpdateSubscriptionResponse struct {
-	View View
+	OutputBucketOpts  BucketOptions
 }
 
 type InstallContinuousQueryReply struct {
@@ -116,7 +139,10 @@ type GetContinuousQueriesReply struct {
 	}
 }
 
+// auxiliary structs
+
 // Request represents a request from client
+
 type Request struct {
 	ID      uint64             `json:"id"`
 	Type    routes.RequestType `json:"type"`

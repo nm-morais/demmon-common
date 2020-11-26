@@ -13,19 +13,26 @@ func NewRequest(reqNr int) RequestType {
 }
 
 const (
+	// membership
 	GetInView RequestType = iota
+	MembershipUpdates
+
+	// metric buckets
 	GetRegisteredMetricBuckets
-	RegisterMetrics
+	RegisterMetricBuckets
 	PushMetricBlob
-	RegisterAggregationPlugin
-	InstallCustomInterestSet
+
+	// queries
 	InstallContinuousQuery
 	GetContinuousQueries
 	Query
-	IsMetricActive
+
+	// interest sets
+	InstallCustomInterestSet
+	InstallNeighborhoodInterestSet
+
 	BroadcastMessage
 	AlarmTrigger
-	MembershipUpdates
 )
 
 func (r RequestType) String() string {
@@ -34,8 +41,8 @@ func (r RequestType) String() string {
 		return "GetInView"
 	case GetRegisteredMetricBuckets:
 		return "GetRegisteredMetricBuckets"
-	case RegisterMetrics:
-		return "RegisterMetrics"
+	case RegisterMetricBuckets:
+		return "RegisterMetricBuckets"
 	case PushMetricBlob:
 		return "PushMetricBlob"
 	case Query:
@@ -46,8 +53,8 @@ func (r RequestType) String() string {
 		return "GetContinuousQueries"
 	case InstallCustomInterestSet:
 		return "InstallCustomInterestSet"
-	case IsMetricActive:
-		return "IsMetricActive"
+	case InstallNeighborhoodInterestSet:
+		return "InstallNeighborhoodInterestSet"
 	case BroadcastMessage:
 		return "BroadcastMessage"
 	case AlarmTrigger:
