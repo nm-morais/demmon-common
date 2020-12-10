@@ -21,6 +21,7 @@ const (
 	GetRegisteredMetricBuckets
 	RegisterMetricBuckets
 	PushMetricBlob
+	InstallBucket
 
 	// queries
 	InstallContinuousQuery
@@ -45,6 +46,8 @@ func (r RequestType) String() string {
 		return "RegisterMetricBuckets"
 	case PushMetricBlob:
 		return "PushMetricBlob"
+	case InstallBucket:
+		return "InstallBucket"
 	case Query:
 		return "QueryMetric"
 	case InstallContinuousQuery:

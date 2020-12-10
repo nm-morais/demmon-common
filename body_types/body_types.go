@@ -3,12 +3,20 @@ package body_types
 import (
 	"errors"
 	"net"
+	"strings"
 	"time"
 
 	"github.com/nm-morais/demmon-common/routes"
 )
 
 // membership
+
+func (p *Peer) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return p.IP.String()
+}
 
 type Peer struct {
 	ID string
@@ -20,6 +28,26 @@ type View struct {
 	Siblings    []*Peer
 	Parent      *Peer
 	Grandparent *Peer
+}
+
+func (v View) String() {
+	sb := &strings.Builder{}
+	sb.WriteString("Children:")
+	for _, c := range v.Children {
+		sb.WriteString(c.String())
+		sb.WriteString("|")
+	}
+
+	sb.WriteString(", Siblings:")
+	for _, s := range v.Siblings {
+		sb.WriteString(s.String())
+		sb.WriteString("|")
+	}
+	sb.WriteString(", Parent:")
+	sb.WriteString(v.Parent.String())
+
+	sb.WriteString(", Grandparent:")
+	sb.WriteString(v.Grandparent.String())
 }
 
 type NodeUpdates struct {
