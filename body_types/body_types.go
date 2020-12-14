@@ -118,7 +118,12 @@ type PointWithTagsAndName struct {
 	Name  string
 }
 
-func NewPoint(name string, tags map[string]string, fields map[string]interface{}, timestamp time.Time) *PointWithTagsAndName {
+func NewPoint(
+	name string,
+	tags map[string]string,
+	fields map[string]interface{},
+	timestamp time.Time,
+) *PointWithTagsAndName {
 	return &PointWithTagsAndName{
 		Name: name,
 		Tags: tags,
