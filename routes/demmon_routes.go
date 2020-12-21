@@ -13,22 +13,21 @@ func NewRequest(reqNr int) RequestType {
 }
 
 const (
-	// membership
+	// membership.
 	GetInView RequestType = iota
 	MembershipUpdates
 
-	// metric buckets
+	// metric buckets.
 	GetRegisteredMetricBuckets
-	RegisterMetricBuckets
 	PushMetricBlob
 	InstallBucket
 
-	// queries
+	// queries.
 	InstallContinuousQuery
 	GetContinuousQueries
 	Query
 
-	// interest sets
+	// interest sets.
 	InstallCustomInterestSet
 	InstallNeighborhoodInterestSet
 
@@ -42,8 +41,6 @@ func (r RequestType) String() string {
 		return "GetInView"
 	case GetRegisteredMetricBuckets:
 		return "GetRegisteredMetricBuckets"
-	case RegisterMetricBuckets:
-		return "RegisterMetricBuckets"
 	case PushMetricBlob:
 		return "PushMetricBlob"
 	case InstallBucket:

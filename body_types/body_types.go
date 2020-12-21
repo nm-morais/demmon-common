@@ -2,6 +2,7 @@ package body_types
 
 import (
 	"errors"
+	"fmt"
 	"net"
 	"strings"
 	"time"
@@ -15,6 +16,7 @@ func (p *Peer) String() string {
 	if p == nil {
 		return "<nil>"
 	}
+
 	return p.IP.String()
 }
 
@@ -33,16 +35,19 @@ type View struct {
 func (v View) String() {
 	sb := &strings.Builder{}
 	sb.WriteString("Children:")
+
 	for _, c := range v.Children {
 		sb.WriteString(c.String())
 		sb.WriteString("|")
 	}
 
 	sb.WriteString(", Siblings:")
+
 	for _, s := range v.Siblings {
 		sb.WriteString(s.String())
 		sb.WriteString("|")
 	}
+
 	sb.WriteString(", Parent:")
 	sb.WriteString(v.Parent.String())
 
@@ -59,50 +64,37 @@ type NodeUpdateSubscriptionResponse struct {
 	View View
 }
 
-// interest sets
-
-type CustomInterestSet struct {
-	MaxRetries       int
-	Query            RunnableExpression
-	Hosts            []*Peer
-	OutputBucketOpts BucketOptions
-}
-
-type NeighborhoodInterestSet struct {
-	MaxRetries       int
-	Query            RunnableExpression
-	TTL              int
-	OutputBucketOpts BucketOptions
-}
-
-type TreeInterestSet struct {
-	MaxRetries       int
-	Query            RunnableExpression
-	OutputBucketOpts BucketOptions
-	Levels           int
-}
-
-type GlobalInterestSet struct {
-	MaxRetries       int
-	Query            RunnableExpression
-	OutputBucketOpts BucketOptions
-}
-
-type InstallInterestSetReply struct {
-	SetId uint64
-}
-
 // timeseries
 
-type Timeseries struct {
-	Name   string
-	Tags   map[string]string
-	Points []Point
+func NewTimeseriesDTO(measurementName string, tags map[string]string, values ...*Observable) *TimeseriesDTO {
+	ts := &TimeseriesDTO{MeasurementName: measurementName, TSTags: tags, Values: values}
+	return ts
 }
 
-type Point struct {
+func NewObservable(fields map[string]interface{}, ts time.Time) *Observable {
+	return &Observable{
+		Fields: fields,
+		TS:     ts,
+	}
+}
+
+type TimeseriesDTO struct {
+	MeasurementName string            `json:"name"`
+	TSTags          map[string]string `json:"tags"`
+	Values          []*Observable     `json:"values"`
+}
+
+func (ts *TimeseriesDTO) String() string {
+	return fmt.Sprintf("Name: %s | Tags %+v | Values: %+v", ts.MeasurementName, ts.TSTags, ts.Values)
+}
+
+type Observable struct {
 	TS     time.Time
 	Fields map[string]interface{}
+}
+
+func (os *Observable) String() string {
+	return fmt.Sprintf(" (Fields:%+v, timestamp:%+v)", os.Fields, os.TS)
 }
 
 type BucketOptions struct {
@@ -110,29 +102,29 @@ type BucketOptions struct {
 	Granularity Granularity
 }
 
-type PointCollectionWithTagsAndName = []*PointWithTagsAndName
+// type PointCollectionWithTagsAndName = []*PointWithTagsAndName
 
-type PointWithTagsAndName struct {
-	Point Point
-	Tags  map[string]string
-	Name  string
-}
+// type PointWithTagsAndName struct {
+// 	Point Point
+// 	Tags  map[string]string
+// 	Name  string
+// }
 
-func NewPoint(
-	name string,
-	tags map[string]string,
-	fields map[string]interface{},
-	timestamp time.Time,
-) *PointWithTagsAndName {
-	return &PointWithTagsAndName{
-		Name: name,
-		Tags: tags,
-		Point: Point{
-			Fields: fields,
-			TS:     timestamp,
-		},
-	}
-}
+// func NewPoint(
+// 	name string,
+// 	tags map[string]string,
+// 	fields map[string]interface{},
+// 	timestamp time.Time,
+// ) *PointWithTagsAndName {
+// 	return &PointWithTagsAndName{
+// 		Name: name,
+// 		Tags: tags,
+// 		Point: Point{
+// 			Fields: fields,
+// 			TS:     timestamp,
+// 		},
+// 	}
+// }
 
 type Granularity struct {
 	Granularity time.Duration
@@ -159,12 +151,12 @@ type InstallContinuousQueryRequest struct {
 }
 
 type InstallContinuousQueryReply struct {
-	TaskId uint64
+	TaskID uint64
 }
 
 type GetContinuousQueriesReply struct {
 	ContinuousQueries []struct {
-		TaskId    int
+		TaskID    int
 		NrRetries int
 		CurrTry   int
 		LastRan   time.Time
@@ -172,7 +164,36 @@ type GetContinuousQueriesReply struct {
 	}
 }
 
-// auxiliary structs
+// interest sets
+
+type InterestSet struct {
+	MaxRetries       int
+	Query            RunnableExpression
+	OutputBucketOpts BucketOptions
+}
+
+type CustomInterestSet struct {
+	Hosts []*Peer
+	IS    InterestSet
+}
+
+type NeighborhoodInterestSet struct {
+	TTL int
+	IS  InterestSet
+}
+
+type TreeInterestSet struct {
+	Levels int
+	IS     InterestSet
+}
+
+type GlobalInterestSet struct {
+	IS InterestSet
+}
+
+type InstallInterestSetReply struct {
+	SetID uint64
+}
 
 // Request represents a request from client
 
@@ -182,13 +203,14 @@ type Request struct {
 	Message interface{}        `json:"message,omitempty"`
 }
 
-// Response is the reply message from the server
+// Response is the reply message from the server.
 type Response struct {
-	ID      uint64             `json:"id"`
-	Push    bool               `json:"push"`
-	Type    routes.RequestType `json:"type"`
-	Error   bool               `json:"error"`
 	Message interface{}        `json:"message,omitempty"`
+	ID      uint64             `json:"id"`
+	Type    routes.RequestType `json:"type"`
+	Push    bool               `json:"push"`
+	Error   bool               `json:"error"`
+	Code    int
 }
 
 func NewRequest(id uint64, reqType routes.RequestType, message interface{}) *Request {
@@ -199,26 +221,28 @@ func NewRequest(id uint64, reqType routes.RequestType, message interface{}) *Req
 	}
 }
 
-func NewResponse(id uint64, push bool, err error, respType routes.RequestType, message interface{}) *Response {
+func NewResponse(id uint64, push bool, err error, code int, respType routes.RequestType, message interface{}) *Response {
 	if err != nil {
 		return &Response{
 			Type:    respType,
 			Push:    push,
 			Error:   true,
+			Code:    code,
 			ID:      id,
 			Message: err.Error(),
 		}
 	}
+
 	return &Response{
 		Type:    respType,
 		Push:    push,
 		Error:   false,
 		ID:      id,
 		Message: message,
+		Code:    code,
 	}
-
 }
 
 func (r *Response) GetMsgAsErr() error {
-	return errors.New(r.Message.(string))
+	return fmt.Errorf("status code: %d, message: %s", r.Code, errors.New(r.Message.(string)))
 }
