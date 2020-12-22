@@ -56,7 +56,7 @@ func (v View) String() {
 }
 
 type NodeUpdates struct {
-	Node Peer
+	Peer Peer
 	View View
 }
 
@@ -66,13 +66,13 @@ type NodeUpdateSubscriptionResponse struct {
 
 // timeseries
 
-func NewTimeseriesDTO(measurementName string, tags map[string]string, values ...*Observable) *TimeseriesDTO {
-	ts := &TimeseriesDTO{MeasurementName: measurementName, TSTags: tags, Values: values}
+func NewTimeseriesDTO(measurementName string, tags map[string]string, values ...ObservableDTO) TimeseriesDTO {
+	ts := TimeseriesDTO{MeasurementName: measurementName, TSTags: tags, Values: values}
 	return ts
 }
 
-func NewObservable(fields map[string]interface{}, ts time.Time) *Observable {
-	return &Observable{
+func NewObservableDTO(fields map[string]interface{}, ts time.Time) ObservableDTO {
+	return ObservableDTO{
 		Fields: fields,
 		TS:     ts,
 	}
@@ -81,25 +81,25 @@ func NewObservable(fields map[string]interface{}, ts time.Time) *Observable {
 type TimeseriesDTO struct {
 	MeasurementName string            `json:"name"`
 	TSTags          map[string]string `json:"tags"`
-	Values          []*Observable     `json:"values"`
+	Values          []ObservableDTO   `json:"values"`
 }
 
-func (ts *TimeseriesDTO) String() string {
+func (ts TimeseriesDTO) String() string {
 	return fmt.Sprintf("Name: %s | Tags %+v | Values: %+v", ts.MeasurementName, ts.TSTags, ts.Values)
 }
 
-type Observable struct {
-	TS     time.Time
-	Fields map[string]interface{}
+type ObservableDTO struct {
+	TS     time.Time              `json:"timestamp"`
+	Fields map[string]interface{} `json:"fields"`
 }
 
-func (os *Observable) String() string {
-	return fmt.Sprintf(" (Fields:%+v, timestamp:%+v)", os.Fields, os.TS)
+func (os ObservableDTO) String() string {
+	return fmt.Sprintf(" (fields:%+v, timestamp:%+v)", os.Fields, os.TS)
 }
 
 type BucketOptions struct {
-	Name        string
-	Granularity Granularity
+	Name        string      `json:"name"`
+	Granularity Granularity `json:"granularity"`
 }
 
 // type PointCollectionWithTagsAndName = []*PointWithTagsAndName
