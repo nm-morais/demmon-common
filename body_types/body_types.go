@@ -55,7 +55,15 @@ func (v View) String() {
 	sb.WriteString(v.Grandparent.String())
 }
 
+type NodeUpdateType uint
+
+const (
+	NodeUp NodeUpdateType = iota
+	NodeDown
+)
+
 type NodeUpdates struct {
+	Type NodeUpdateType
 	Peer Peer
 	View View
 }
@@ -173,7 +181,7 @@ type InterestSet struct {
 }
 
 type CustomInterestSet struct {
-	Hosts []*Peer
+	Hosts []net.IP
 	IS    InterestSet
 }
 
