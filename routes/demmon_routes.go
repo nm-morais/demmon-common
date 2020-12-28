@@ -31,7 +31,10 @@ const (
 	InstallCustomInterestSet
 	InstallNeighborhoodInterestSet
 
+	// broadcasts.
 	BroadcastMessage
+	InstallBroadcastMessageHandler
+
 	AlarmTrigger
 )
 

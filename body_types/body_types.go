@@ -203,6 +203,18 @@ type InstallInterestSetReply struct {
 	SetID uint64
 }
 
+// broadcasts
+
+type InstallMessageHandlerRequest struct {
+	ID uint64 `json:"id"`
+}
+
+type Message struct {
+	ID      uint64      `json:"id"`
+	TTL     uint        `json:"ttl"`
+	Content interface{} `json:"content"`
+}
+
 // Request represents a request from client
 
 type Request struct {
