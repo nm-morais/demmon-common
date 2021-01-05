@@ -190,9 +190,12 @@ type NeighborhoodInterestSet struct {
 	IS  InterestSet
 }
 
-type TreeInterestSet struct {
-	Levels int
-	IS     InterestSet
+type TreeAggregationSet struct {
+	MaxRetries       int
+	Query            RunnableExpression
+	OutputBucketOpts BucketOptions
+	MergeFunction    RunnableExpression
+	Levels           int
 }
 
 type GlobalInterestSet struct {

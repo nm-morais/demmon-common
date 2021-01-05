@@ -31,6 +31,9 @@ const (
 	InstallCustomInterestSet
 	InstallNeighborhoodInterestSet
 
+	// distributed aggregation
+	InstallTreeAggregationFunction
+
 	// broadcasts.
 	BroadcastMessage
 	InstallBroadcastMessageHandler
