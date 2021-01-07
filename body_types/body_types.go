@@ -10,6 +10,14 @@ import (
 	"github.com/nm-morais/demmon-common/routes"
 )
 
+var (
+	ErrBadBodyType               = errors.New("bad request body type")
+	ErrNonRecognizedOp           = errors.New("non-recognized operation")
+	ErrCannotConnect             = errors.New("could not connect to peer")
+	ErrCustomInterestSetNotFound = errors.New("custom interest set not found")
+	ErrBucketNotFound            = errors.New("bucket not found")
+)
+
 // membership
 
 func (p *Peer) String() string {
@@ -110,30 +118,6 @@ type BucketOptions struct {
 	Granularity Granularity `json:"granularity"`
 }
 
-// type PointCollectionWithTagsAndName = []*PointWithTagsAndName
-
-// type PointWithTagsAndName struct {
-// 	Point Point
-// 	Tags  map[string]string
-// 	Name  string
-// }
-
-// func NewPoint(
-// 	name string,
-// 	tags map[string]string,
-// 	fields map[string]interface{},
-// 	timestamp time.Time,
-// ) *PointWithTagsAndName {
-// 	return &PointWithTagsAndName{
-// 		Name: name,
-// 		Tags: tags,
-// 		Point: Point{
-// 			Fields: fields,
-// 			TS:     timestamp,
-// 		},
-// 	}
-// }
-
 type Granularity struct {
 	Granularity time.Duration
 	Count       int
@@ -179,9 +163,12 @@ type InterestSet struct {
 	Query            RunnableExpression
 	OutputBucketOpts BucketOptions
 }
-
+type CustomInterestSetHost struct {
+	IP   net.IP
+	Port int
+}
 type CustomInterestSet struct {
-	Hosts []net.IP
+	Hosts []CustomInterestSetHost
 	IS    InterestSet
 }
 
@@ -203,7 +190,11 @@ type GlobalInterestSet struct {
 }
 
 type InstallInterestSetReply struct {
-	SetID uint64
+	SetID int64
+}
+
+type RemoveInterestSetReq struct {
+	SetID int64
 }
 
 // broadcasts

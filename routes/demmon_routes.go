@@ -29,6 +29,8 @@ const (
 
 	// interest sets.
 	InstallCustomInterestSet
+	RemoveCustomInterestSet
+
 	InstallNeighborhoodInterestSet
 
 	// distributed aggregation
