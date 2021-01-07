@@ -185,12 +185,21 @@ type TreeAggregationSet struct {
 	Levels           int
 }
 
-type GlobalInterestSet struct {
-	IS InterestSet
+type GlobalAggregationFunction struct {
+	Query              RunnableExpression
+	MergeFunction      RunnableExpression
+	DifferenceFunction RunnableExpression
+	OutputBucketOpts   BucketOptions
+	MaxRetries         int
 }
 
 type InstallInterestSetReply struct {
 	SetID int64
+}
+
+type UpdateCustomInterestSetReq struct {
+	SetID int64
+	Hosts []CustomInterestSetHost
 }
 
 type RemoveInterestSetReq struct {

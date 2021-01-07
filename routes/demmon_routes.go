@@ -30,6 +30,7 @@ const (
 	// interest sets.
 	InstallCustomInterestSet
 	RemoveCustomInterestSet
+	UpdateCustomInterestSetHosts
 
 	InstallNeighborhoodInterestSet
 
