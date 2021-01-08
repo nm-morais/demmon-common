@@ -14,6 +14,7 @@ var (
 	ErrBadBodyType               = errors.New("bad request body type")
 	ErrNonRecognizedOp           = errors.New("non-recognized operation")
 	ErrCannotConnect             = errors.New("could not connect to peer")
+	ErrQuerying                  = errors.New("an error occurred performing query")
 	ErrCustomInterestSetNotFound = errors.New("custom interest set not found")
 	ErrBucketNotFound            = errors.New("bucket not found")
 )
@@ -168,8 +169,10 @@ type CustomInterestSetHost struct {
 	Port int
 }
 type CustomInterestSet struct {
-	Hosts []CustomInterestSetHost
-	IS    InterestSet
+	DialRetryBackoff time.Duration
+	DialTimeout      time.Duration
+	Hosts            []CustomInterestSetHost
+	IS               InterestSet
 }
 
 type NeighborhoodInterestSet struct {
@@ -233,7 +236,7 @@ type Response struct {
 	Type    routes.RequestType `json:"type"`
 	Push    bool               `json:"push"`
 	Error   bool               `json:"error"`
-	Code    int
+	Code    int                `json:"code"`
 }
 
 func NewRequest(id uint64, reqType routes.RequestType, message interface{}) *Request {
