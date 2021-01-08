@@ -191,7 +191,7 @@ type TreeAggregationSet struct {
 type GlobalAggregationFunction struct {
 	Query              RunnableExpression
 	MergeFunction      RunnableExpression
-	DifferenceFunction RunnableExpression
+	DifferenceFunction RunnableExpression // assumes that first element in arguments is the minuend and the remaining args are subtrahends.
 	OutputBucketOpts   BucketOptions
 	MaxRetries         int
 }

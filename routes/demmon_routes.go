@@ -37,6 +37,8 @@ const (
 	// distributed aggregation
 	InstallTreeAggregationFunction
 
+	InstallGlobalAggregationFunction
+
 	// broadcasts.
 	BroadcastMessage
 	InstallBroadcastMessageHandler
