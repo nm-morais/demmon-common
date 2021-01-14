@@ -44,10 +44,14 @@ const (
 	InstallBroadcastMessageHandler
 
 	AlarmTrigger
+
+	StartBabel
 )
 
 func (r RequestType) String() string {
 	switch r {
+	case StartBabel:
+		return "StartBabel"
 	case GetInView:
 		return "GetInView"
 	case GetRegisteredMetricBuckets:
@@ -64,6 +68,10 @@ func (r RequestType) String() string {
 		return "GetContinuousQueries"
 	case InstallCustomInterestSet:
 		return "InstallCustomInterestSet"
+	case InstallGlobalAggregationFunction:
+		return "InstallGlobalAggregationFunction"
+	case InstallTreeAggregationFunction:
+		return "InstallTreeAggregationFunction"
 	case InstallNeighborhoodInterestSet:
 		return "InstallNeighborhoodInterestSet"
 	case BroadcastMessage:
@@ -73,7 +81,7 @@ func (r RequestType) String() string {
 	case MembershipUpdates:
 		return "MembershipUpdates"
 	default:
-		return fmt.Sprintf("%d", int(r))
+		panic(fmt.Sprintf("no String() method for requestType %d", r))
 	}
 }
 
