@@ -72,10 +72,16 @@ func (r RequestType) String() string {
 		return "InstallGlobalAggregationFunction"
 	case InstallTreeAggregationFunction:
 		return "InstallTreeAggregationFunction"
+	case RemoveCustomInterestSet:
+		return "RemoveCustomInterestSet"
+	case UpdateCustomInterestSetHosts:
+		return "UpdateCustomInterestSetHosts"
 	case InstallNeighborhoodInterestSet:
 		return "InstallNeighborhoodInterestSet"
 	case BroadcastMessage:
 		return "BroadcastMessage"
+	case InstallBroadcastMessageHandler:
+		return "InstallBroadcastMessageHandler"
 	case AlarmTrigger:
 		return "AlarmTrigger"
 	case MembershipUpdates:
