@@ -43,7 +43,7 @@ const (
 	BroadcastMessage
 	InstallBroadcastMessageHandler
 
-	AlarmTrigger
+	InstallAlarm
 
 	StartBabel
 )
@@ -82,7 +82,7 @@ func (r RequestType) String() string {
 		return "BroadcastMessage"
 	case InstallBroadcastMessageHandler:
 		return "InstallBroadcastMessageHandler"
-	case AlarmTrigger:
+	case InstallAlarm:
 		return "AlarmTrigger"
 	case MembershipUpdates:
 		return "MembershipUpdates"

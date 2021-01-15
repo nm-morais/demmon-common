@@ -164,10 +164,12 @@ type InterestSet struct {
 	Query            RunnableExpression
 	OutputBucketOpts BucketOptions
 }
+
 type CustomInterestSetHost struct {
 	IP   net.IP
 	Port int
 }
+
 type CustomInterestSet struct {
 	DialRetryBackoff time.Duration
 	DialTimeout      time.Duration
@@ -219,6 +221,38 @@ type Message struct {
 	ID      uint64      `json:"id"`
 	TTL     uint        `json:"ttl"`
 	Content interface{} `json:"content"`
+}
+
+// alarms
+
+type TimeseriesFilter struct {
+	MeasurementName string
+	TagFilters      map[string]string
+}
+
+type InstallAlarmRequest struct {
+	WatchList []TimeseriesFilter
+	Query     RunnableExpression
+
+	// enables only performing alarm query when the timeseries matching the watchlist are changed, saving much CPU time
+	// in order to remove a timeseries when there are no values inserted, this must be set to false
+	// if the number of changes to the watched timeseries would exceed the specified periodicity,
+	// Demmon resorts to only executing the alarm when the suplied periodicity duration has passed
+	CheckOnlyOnChange bool
+
+	MaxRetries       int
+	CheckPeriodicity time.Duration
+}
+
+type InstallAlarmReply struct {
+	ID int64 `json:"id"`
+}
+
+type AlarmUpdate struct {
+	ID       int64 `json:"id"`
+	Error    bool
+	Trigger  bool
+	ErrorMsg string
 }
 
 // Request represents a request from client
