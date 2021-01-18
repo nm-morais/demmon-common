@@ -234,14 +234,16 @@ type InstallAlarmRequest struct {
 	WatchList []TimeseriesFilter
 	Query     RunnableExpression
 
-	// enables only performing alarm query when the timeseries matching the watchlist are changed, saving much CPU time
-	// in order to remove a timeseries when there are no values inserted, this must be set to false
-	// if the number of changes to the watched timeseries would exceed the specified periodicity,
-	// Demmon resorts to only executing the alarm when the suplied periodicity duration has passed
-	CheckOnlyOnChange bool
+	TriggerBackoffTime time.Duration
 
-	MaxRetries       int
+	MaxRetries int
+
 	CheckPeriodicity time.Duration
+	// disables only performing alarm query when the timeseries matching the watchlist are changed, saving much CPU time
+	// in order to remove a timeseries when there are no values inserted, this must be set to true
+	// if the number of changes to the watched timeseries would exceed the specified periodicity,
+	// Demmon resorts to only executing the alarm when the suplied "CheckPeriodicity" duration has passed
+	CheckPeriodic bool
 }
 
 type InstallAlarmReply struct {
