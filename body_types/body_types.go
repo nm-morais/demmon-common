@@ -207,8 +207,12 @@ type UpdateCustomInterestSetReq struct {
 	Hosts []CustomInterestSetHost
 }
 
-type RemoveInterestSetReq struct {
-	SetID int64
+type RemoveResourceRequest struct {
+	ResourceID int64
+}
+
+type RemoveResourceReply struct {
+	ResourceID int64
 }
 
 // broadcasts
@@ -251,10 +255,10 @@ type InstallAlarmReply struct {
 }
 
 type AlarmUpdate struct {
-	ID       int64 `json:"id"`
-	Error    bool
-	Trigger  bool
-	ErrorMsg string
+	ID       int64  `json:"id"`
+	Error    bool   `json:"err"`
+	Trigger  bool   `json:"trigger"`
+	ErrorMsg string `json:"errMsg"`
 }
 
 // Request represents a request from client

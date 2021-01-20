@@ -44,6 +44,7 @@ const (
 	InstallBroadcastMessageHandler
 
 	InstallAlarm
+	RemoveAlarm
 
 	StartBabel
 )
