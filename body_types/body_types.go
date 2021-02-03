@@ -144,7 +144,7 @@ type InstallContinuousQueryRequest struct {
 }
 
 type InstallContinuousQueryReply struct {
-	TaskID uint64
+	TaskID string
 }
 
 type GetContinuousQueriesReply struct {
@@ -199,30 +199,30 @@ type GlobalAggregationFunction struct {
 }
 
 type InstallInterestSetReply struct {
-	SetID int64
+	SetID string
 }
 
 type UpdateCustomInterestSetReq struct {
-	SetID int64
+	SetID string
 	Hosts []CustomInterestSetHost
 }
 
 type RemoveResourceRequest struct {
-	ResourceID int64
+	ResourceID string
 }
 
 type RemoveResourceReply struct {
-	ResourceID int64
+	ResourceID string
 }
 
 // broadcasts
 
 type InstallMessageHandlerRequest struct {
-	ID uint64 `json:"id"`
+	ID ustring `json:"id"`
 }
 
 type Message struct {
-	ID      uint64      `json:"id"`
+	ID      ustring     `json:"id"`
 	TTL     uint        `json:"ttl"`
 	Content interface{} `json:"content"`
 }
@@ -251,11 +251,11 @@ type InstallAlarmRequest struct {
 }
 
 type InstallAlarmReply struct {
-	ID int64 `json:"id"`
+	ID string `json:"id"`
 }
 
 type AlarmUpdate struct {
-	ID       int64  `json:"id"`
+	ID       string `json:"id"`
 	Error    bool   `json:"err"`
 	Trigger  bool   `json:"trigger"`
 	ErrorMsg string `json:"errMsg"`
@@ -264,7 +264,7 @@ type AlarmUpdate struct {
 // Request represents a request from client
 
 type Request struct {
-	ID      uint64             `json:"id"`
+	ID      string             `json:"id"`
 	Type    routes.RequestType `json:"type"`
 	Message interface{}        `json:"message,omitempty"`
 }
@@ -272,14 +272,14 @@ type Request struct {
 // Response is the reply message from the server.
 type Response struct {
 	Message interface{}        `json:"message,omitempty"`
-	ID      uint64             `json:"id"`
+	ID      string             `json:"id"`
 	Type    routes.RequestType `json:"type"`
 	Push    bool               `json:"push"`
 	Error   bool               `json:"error"`
 	Code    int                `json:"code"`
 }
 
-func NewRequest(id uint64, reqType routes.RequestType, message interface{}) *Request {
+func NewRequest(id string, reqType routes.RequestType, message interface{}) *Request {
 	return &Request{
 		Type:    reqType,
 		ID:      id,
@@ -287,7 +287,7 @@ func NewRequest(id uint64, reqType routes.RequestType, message interface{}) *Req
 	}
 }
 
-func NewResponse(id uint64, push bool, err error, code int, respType routes.RequestType, message interface{}) *Response {
+func NewResponse(id string, push bool, err error, code int, respType routes.RequestType, message interface{}) *Response {
 	if err != nil {
 		return &Response{
 			Type:    respType,
