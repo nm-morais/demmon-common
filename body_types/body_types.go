@@ -218,11 +218,11 @@ type RemoveResourceReply struct {
 // broadcasts
 
 type InstallMessageHandlerRequest struct {
-	ID ustring `json:"id"`
+	ID string `json:"id"`
 }
 
 type Message struct {
-	ID      ustring     `json:"id"`
+	ID      string      `json:"id"`
 	TTL     uint        `json:"ttl"`
 	Content interface{} `json:"content"`
 }
