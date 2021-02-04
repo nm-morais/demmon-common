@@ -165,6 +165,10 @@ type InterestSet struct {
 	OutputBucketOpts BucketOptions
 }
 
+type CustomInterestSetErr struct {
+	Err string
+}
+
 type CustomInterestSetHost struct {
 	IP   net.IP
 	Port int
