@@ -192,6 +192,10 @@ type TreeAggregationSet struct {
 	OutputBucketOpts BucketOptions
 	MergeFunction    RunnableExpression
 	Levels           int
+
+	UpdateOnMembershipChange bool
+	// only relevant if UpdateOnMembershipChange == true
+	MaxFrequencyUpdateOnMembershipChange time.Duration
 }
 
 type GlobalAggregationFunction struct {
