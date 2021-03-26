@@ -191,11 +191,15 @@ type TreeAggregationSet struct {
 	Query            RunnableExpression
 	OutputBucketOpts BucketOptions
 	MergeFunction    RunnableExpression
-	Levels           int
+
+	Levels int // -1 for infinite range
 
 	UpdateOnMembershipChange bool
 	// only relevant if UpdateOnMembershipChange == true
 	MaxFrequencyUpdateOnMembershipChange time.Duration
+
+	StoreIntermediateValues bool
+	IntermediateBucketOpts  BucketOptions
 }
 
 type GlobalAggregationFunction struct {
@@ -204,6 +208,9 @@ type GlobalAggregationFunction struct {
 	DifferenceFunction RunnableExpression // assumes that first element in arguments is the minuend and the remaining args are subtrahends.
 	OutputBucketOpts   BucketOptions
 	MaxRetries         int
+
+	StoreIntermediateValues bool
+	IntermediateBucketOpts  BucketOptions
 }
 
 type InstallInterestSetReply struct {
