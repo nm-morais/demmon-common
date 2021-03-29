@@ -19,6 +19,11 @@ var (
 	ErrBucketNotFound            = errors.New("bucket not found")
 )
 
+type Peer struct {
+	ID string
+	IP net.IP
+}
+
 // membership
 
 func (p *Peer) String() string {
@@ -27,11 +32,6 @@ func (p *Peer) String() string {
 	}
 
 	return p.IP.String()
-}
-
-type Peer struct {
-	ID string
-	IP net.IP
 }
 
 type View struct {
@@ -182,24 +182,27 @@ type CustomInterestSet struct {
 }
 
 type NeighborhoodInterestSet struct {
-	TTL int
-	IS  InterestSet
+	// stores the hop count as a tag "hop_nr" with a number corresponding to the hop in which it was registered
+	StoreHopCountAsTag bool
+	TTL                int
+	IS                 InterestSet
 }
 
 type TreeAggregationSet struct {
-	MaxRetries       int
-	Query            RunnableExpression
-	OutputBucketOpts BucketOptions
-	MergeFunction    RunnableExpression
+	OutputBucketOpts       BucketOptions
+	IntermediateBucketOpts BucketOptions
+	Query                  RunnableExpression
+	MergeFunction          RunnableExpression
+	MaxRetries             int
 
-	Levels int // -1 for infinite range
+	// -1 for infinite range
+	Levels int
 
-	UpdateOnMembershipChange bool
 	// only relevant if UpdateOnMembershipChange == true
 	MaxFrequencyUpdateOnMembershipChange time.Duration
+	UpdateOnMembershipChange             bool
 
 	StoreIntermediateValues bool
-	IntermediateBucketOpts  BucketOptions
 }
 
 type GlobalAggregationFunction struct {
